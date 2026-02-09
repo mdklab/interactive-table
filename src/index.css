@@ -1,0 +1,14 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  background: #f4f7fb;
+  color: #0b1f3a;
+}
+
+#root {
+  isolation: isolate;
+}
