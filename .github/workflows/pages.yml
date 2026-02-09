@@ -1,0 +1,46 @@
+name: Dev: CI and GitHub Pages
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: Dev: Build the project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dev: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Dev: Install dependencies
+        run: npm ci
+      - name: Dev: Run build
+        run: npm run build
+      - name: Dev: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+  deploy:
+    name: Dev: Deploy GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dev: Download build output
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: .
+      - name: Dev: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v5
+        with:
+          branch: gh-pages
+          folder: dist
+          clean: true
+          token: ${{ secrets.GITHUB_TOKEN }}
